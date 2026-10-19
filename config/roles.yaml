@@ -1,0 +1,63 @@
+# Role taxonomy. Matched case-insensitively against the job TITLE.
+# First match wins, so ORDER MATTERS: specific categories go before general ones
+# (e.g. "Software Engineer, Security" -> security, not swe;
+#       "Analytics Engineer" -> data_eng, not data_analyst).
+# Anything unmatched -> "other" (sales, finance, HR...): kept in raw, excluded from dashboards.
+
+roles:
+  security:
+    - security
+    - secops
+    - appsec
+    - detection
+    - soc analyst
+    - iam
+
+  sre_platform:
+    - site reliability
+    - sre
+    - devops
+    - platform engineer
+    - infrastructure engineer
+    - cloud engineer
+
+  data_eng:
+    - data engineer
+    - analytics engineer
+    - data platform
+
+  ml_ai:
+    - machine learning
+    - ml engineer
+    - ai engineer
+    - applied scientist
+
+  data_science:
+    - data scientist
+
+  data_analyst:
+    - data analyst
+    - business intelligence
+    - bi analyst
+    - product analyst
+    - analytics
+
+  it_identity:
+    - it engineer
+    - systems administrator
+    - identity
+    - endpoint
+    - corporate it
+
+  solutions_eng:
+    - solutions engineer
+    - sales engineer
+    - solutions architect
+    - customer engineer
+
+  swe:
+    - software engineer
+    - backend
+    - frontend
+    - full stack
+    - developer
