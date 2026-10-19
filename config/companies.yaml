@@ -1,0 +1,11 @@
+# config/companies.yaml
+- {name: Cloudflare,   ats: greenhouse, token: cloudflare,   lane: SRE/infra}
+- {name: Datadog,      ats: greenhouse, token: datadog,      lane: SRE/observability}
+- {name: GitLab,       ats: greenhouse, token: gitlab,       lane: SRE/DevOps}
+- {name: Grafana Labs, ats: greenhouse, token: grafanalabs,  lane: SRE/observability}
+- {name: Databricks,   ats: greenhouse, token: databricks,   lane: DE}
+- {name: dbt Labs,     ats: greenhouse, token: dbtlabsinc,   lane: DE/DA}
+- {name: Stripe,       ats: greenhouse, token: stripe,       lane: DE/DA/fintech}
+- {name: Okta,         ats: greenhouse, token: okta,         lane: security/identity}
+- {name: Palantir,     ats: lever,      token: palantir,     lane: DE/gov, DC office}
+- {name: Anduril,      ats: greenhouse, token: andurilindustries, lane: infra/defense}
