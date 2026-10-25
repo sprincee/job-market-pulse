@@ -3,65 +3,72 @@
 ## What this is
 A data platform that tracks what skills tech employers are actually asking for across technical roles: SWE, SRE/platform, DE, DA, data science, ML/AI, security, IT/identity, and solutions engineering (taxonomy in `config/roles.yaml`, matched on job title, first match wins). My own target lanes are SRE/platform, DE, DA, security, and IT/identity. It ingests postings daily from public ATS job-board APIs, builds trend tables, and publishes a public dashboard + pipeline status page.
 
+**Mission:** help students and anyone in tech figure out which skills they should actually build, based on what employers are really asking for. The dashboard is for a broad audience, not just me. Design decisions should serve "what should I learn next?"
+
 It is a portfolio project meant to show DE, DA, and SRE skills in one system, and it doubles as my own job-search tool ("postings that match me" alerts). I'm an MSIS student (UMD, graduating May 2027) with a background in cloud infrastructure and identity (Intune, Entra ID, Conditional Access), AWS Cloud Practitioner + AI Practitioner certified, studying for AWS SAA and Terraform Associate.
 
 ## How to work with me (important)
 - I'm using this project to learn. Explain what you change and why, briefly and plainly.
 - For core logic (transformations, skill extraction, Terraform design), propose an approach and let me decide before writing large amounts of code.
 - Boilerplate, config, and scaffolding: go ahead.
+- Talk before building: explain the next step and wait for my OK before multi-step work or anything with effects outside the repo (scheduled tasks, installs, AWS resources). "Ready to work" is not a go-ahead to execute the whole plan.
+- I make my own commits. Give me a commit message instead of committing.
 - Don't add dependencies or new services without telling me why.
 - Keep costs near $0. Flag anything that would cost money on AWS.
 
 ## Architecture (target)
 ```
 Greenhouse / Lever / Ashby public job-board APIs
-   -> ingest (Python; later AWS Lambda on a daily EventBridge schedule)
-   -> S3 raw/     raw JSON, Hive-style partitions: source=<ats>/date=YYYY-MM-DD/<token>.json
+   -> ingest (Python; AWS Lambda on a daily EventBridge schedule)
+   -> S3 raw/     raw JSON (gzipped), Hive-style partitions: source=<ats>/date=YYYY-MM-DD/<token>.json.gz
    -> transform   dbt + DuckDB -> clean Parquet tables
    -> S3 curated/ fct_postings, fct_skill_mentions, dim_company
-   -> site        Evidence.dev static dashboard on S3 + CloudFront
+   -> site        Evidence.dev static dashboard on S3 + CloudFront (rebuilt automatically after each daily run)
    +  status page pipeline freshness, success rate, incidents
 ```
 All AWS infrastructure is Terraform (remote state in S3). CI/CD via GitHub Actions using OIDC (no stored AWS keys).
+Decided 2026-10-25: go straight to AWS ("path B"), not a laptop-hosted interim. Site on S3 + CloudFront (not Vercel).
 
 ## Current state
-Week 1: local ingestion only. No AWS yet.
-- First successful run 2026-10-19: 10/10 companies, 6,171 postings (Anduril ~2.5k and Databricks ~900 are the largest boards).
-- Dev environment: Windows, PowerShell, VS Code, Python venv in `.venv`.
-- Next up: daily runs to build history, then week 2 (staging models, dedupe, role classification via `config/roles.yaml`, skill extraction).
-- `config/companies.yaml` — companies to track (name, ats, token, lanes)
+Local ingestion works; AWS not started.
+- 2026-10-25 run: 37/37 companies, 12,885 postings, ~60s. Raw is ~171 MB/day, ~17 MB gzipped (~10x).
+- Largest shares: Anduril 19%, Databricks 7%, OpenAI 6%, Stripe 6%. Report skills both as "% of postings" and "% of companies" so big boards don't dominate.
+- Pay info present in ~62% of Greenhouse, ~79% of Lever, ~73% of Ashby postings. Ashby has structured `jobs[].compensation`; Greenhouse/Lever need extraction from text.
+- History gap: no runs 2026-10-20 to 2026-10-24 (before the scheduler existed).
+- Daily schedule (interim until Lambda): Windows Task Scheduler task `JobMarketPulse-Ingest`, daily 2pm, runs `scripts/run_daily.cmd` (venv Python, appends to `logs/ingest.log`). Allowed on battery; StartWhenAvailable catches missed runs. Check with `Get-ScheduledTaskInfo JobMarketPulse-Ingest` (LastTaskResult 0 = ok, 1 = a company failed).
+- Dev environment: Windows, PowerShell, VS Code, Python 3.13 venv in `.venv` (created 2026-10-25).
+- `config/companies.yaml` — 37 companies (name, ats, token, lanes): original 10 + well-known tech, AI, data/infra, security, DC area. 31 Greenhouse, 4 Ashby, 2 Lever.
 - `config/roles.yaml` — role taxonomy for classification (used in week 2)
-- dbt Labs merged with Fivetran (2026); its old Greenhouse board `dbtlabsinc` 404s. Replaced with Vercel. Future: `company_aliases` mapping for mergers/renames.
-- `ingest/sources/greenhouse.py`, `ingest/sources/lever.py` — one `fetch(token, session)` per ATS
+- dbt Labs merged with Fivetran (2026); its old Greenhouse board `dbtlabsinc` 404s. Fivetran is tracked. Future: `company_aliases` mapping for mergers/renames.
+- `ingest/sources/{greenhouse,lever,ashby}.py` — one `fetch(token, session)` per ATS
 - `ingest/run.py` — loops companies, writes raw JSON to `data/raw/...`, retries with backoff, 1s delay between requests, logs per-company counts, exits 1 if any company failed (future alerting hook)
 - Run from project root: `python -m ingest.run`
 - `data/`, `logs/`, `.venv/`, `__pycache__/`, secrets, and Terraform state are gitignored. Data was untracked before the first push, so it was never on GitHub.
 - OneDrive sync is off for this folder, so it doesn't upload anything.
 
 ## Where we left off (update at the end of each session)
-Last session: 2026-10-19
-- Done: first ingestion run committed; `.gitignore` filled in; raw data and `__pycache__` removed from the commit.
-- Next: schedule daily ingestion with Windows Task Scheduler. The plan:
-  - a `scripts/run_daily.cmd` wrapper: cd to the project root, run the venv's `python.exe -m ingest.run`, append output to `logs/ingest.log`;
-  - register the task with `Register-ScheduledTask`, daily at 9am, with `-StartWhenAvailable -RunOnlyIfNetworkAvailable -WakeToRun`.
-- Open question: `.venv` wasn't found in the project root. Confirm where the venv lives before writing the wrapper.
+Last session: 2026-10-25
+- Done: venv + clean `requirements.txt`; daily Task Scheduler job; Ashby source; expanded to 37 companies (all verified against live APIs).
+- Next: decide the AWS ingestion design (S3 layout, Lambda, EventBridge, IAM, Terraform state, alerting), then build it with Terraform.
+- Then: week 2 transforms on the snapshots already collected; dashboard; status page and "matches for me" can follow launch.
 
 ## Data sources
 - Greenhouse: `https://boards-api.greenhouse.io/v1/boards/{token}/jobs?content=true` (public, no auth)
-- Lever: `https://api.lever.co/v0/postings/{token}?mode=json` (public, no auth; respect ~1s between requests)
-- Ashby: public posting API (add later; verify endpoint in docs first)
-- Do NOT scrape LinkedIn/Indeed (ToS). Known bias: many large DC-area employers use Workday, which has no clean public API — document this in the README rather than hacking around it.
+- Lever: `https://api.lever.co/v0/postings/{token}?mode=json` (public, no auth; respect ~1s between requests; slowest source, ~8s per board)
+- Ashby: `https://api.ashbyhq.com/posting-api/job-board/{token}?includeCompensation=true` (public, no auth; verified 2026-10-25). Docs' example shows compensation at top level, but it's actually per job.
+- Watch for same-name token collisions when adding companies (e.g. Lever `arcadia` and Ashby `primer` are different companies than expected).
+- Do NOT scrape LinkedIn/Indeed (ToS). Known bias: many large DC-area employers use Workday, which has no clean public API — document this in the README rather than hacking around it. Not found on any of the three (2026-10-25): Netflix, HubSpot, Etsy, Confluent, HashiCorp, SentinelOne, Tenable, Cvent, Grammarly, Postman.
 
-## Roadmap (launch target ~Nov 30, 2026)
-1. Company list + raw ingestion running daily (start accumulating history ASAP)
-2. Clean, dedupe, classify roles (DE/DA/SRE/security), skill extraction via keyword dictionary (`config/skills.yaml`, with aliases like k8s -> Kubernetes). LLM extraction is a later v2.
-3. Evidence.dev dashboard: skill demand, remote share, salary ranges (from pay-transparency postings)
-4. Terraform: S3 buckets, Lambda + EventBridge, CloudWatch alarms + SNS; data quality tests; freshness SLO; public status page
-5. "Matches for me" alert feed, README, architecture diagram
-6. Launch + LinkedIn post with findings
+## Roadmap (launch target ~mid-Nov 2026)
+1. ~~Company list + raw ingestion running daily~~ (done locally; moving to AWS)
+2. Terraform: S3 buckets, Lambda + EventBridge for ingestion, CloudWatch alarms + SNS. Do this first so history accumulates in AWS.
+3. Clean, dedupe, classify roles, skill extraction via keyword dictionary (`config/skills.yaml`, with aliases like k8s -> Kubernetes). LLM extraction is a later v2.
+4. Evidence.dev dashboard on S3 + CloudFront: skill demand, remote share, salary ranges
+5. Launch + LinkedIn post with findings
+6. After launch: data quality tests, freshness SLO, public status page, "matches for me" alert feed, README, architecture diagram
 
 ## Conventions
-- Python 3, `requests` + `pyyaml`; keep deps in `requirements.txt` (`pip freeze > requirements.txt`)
+- Python 3, `requests` + `pyyaml`; keep deps in `requirements.txt`. Regenerate from the venv with `.venv\Scripts\python.exe -m pip freeze`, written as UTF-8 (PowerShell 5.1's `>` writes UTF-16, which breaks pip; use `| Out-File -Encoding ascii requirements.txt`)
 - Small modules, type hints, logging (not print)
 - Never commit secrets, `.env`, `.terraform/`, or `*.tfstate*`
 - Write postmortems in `docs/postmortems/` when the pipeline breaks

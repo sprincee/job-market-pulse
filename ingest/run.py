@@ -2,9 +2,9 @@ import json, sys, time, datetime, logging, pathlib
 import requests, yaml
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from ingest.sources import greenhouse, lever
+from ingest.sources import ashby, greenhouse, lever
 
-SOURCES = {"greenhouse": greenhouse, "lever": lever}
+SOURCES = {"greenhouse": greenhouse, "lever": lever, "ashby": ashby}
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

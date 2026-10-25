@@ -1,7 +1,12 @@
 # Companies to track. Token = last path segment of the public board URL:
 #   greenhouse: boards.greenhouse.io/<token>  or  job-boards.greenhouse.io/<token>
 #   lever:      jobs.lever.co/<token>
-# "verified" = board confirmed to exist on 2026-10-19. Unverified ones: run ingest and fix any 404s.
+#   ashby:      jobs.ashbyhq.com/<token>
+# "verified" = board confirmed to exist on 2026-10-19. Everything added 2026-10-25 was verified
+# against the live API that day (watch for same-name collisions, e.g. arcadia/primer were wrong companies).
+# lanes = rough hint of what the company hires for; real role classification is per posting via roles.yaml.
+
+# --- Original 10 (2026-10-19) ---
 
 - name: Cloudflare
   ats: greenhouse
@@ -52,3 +57,148 @@
   ats: greenhouse
   token: andurilindustries
   lanes: [sre_platform, swe, security]
+
+# --- Well-known tech (added 2026-10-25) ---
+
+- name: Airbnb
+  ats: greenhouse
+  token: airbnb
+  lanes: [swe, data_science, data_eng]
+
+- name: Reddit
+  ats: greenhouse
+  token: reddit
+  lanes: [swe, ml_ai, data_science]
+
+- name: Coinbase
+  ats: greenhouse
+  token: coinbase
+  lanes: [swe, security, data_eng]
+
+- name: Robinhood
+  ats: greenhouse
+  token: robinhood
+  lanes: [swe, security, data_eng]
+
+- name: Figma
+  ats: greenhouse
+  token: figma
+  lanes: [swe, sre_platform]
+
+- name: DoorDash
+  ats: greenhouse
+  token: doordashusa
+  lanes: [swe, data_science, data_analyst]
+
+- name: Roblox
+  ats: greenhouse
+  token: roblox
+  lanes: [swe, ml_ai, sre_platform]
+
+- name: Waymo
+  ats: greenhouse
+  token: waymo
+  lanes: [swe, ml_ai]
+
+- name: Samsara
+  ats: greenhouse
+  token: samsara
+  lanes: [swe, data_eng, solutions_eng]
+
+- name: MongoDB
+  ats: greenhouse
+  token: mongodb
+  lanes: [swe, sre_platform, solutions_eng]
+
+- name: Elastic
+  ats: greenhouse
+  token: elastic
+  lanes: [swe, sre_platform, security, solutions_eng]
+
+- name: Snowflake
+  ats: ashby
+  token: snowflake
+  lanes: [data_eng, swe, solutions_eng]
+
+- name: Ramp
+  ats: ashby
+  token: ramp
+  lanes: [swe, data_science, security]
+
+# --- AI (added 2026-10-25) ---
+
+- name: Anthropic
+  ats: greenhouse
+  token: anthropic
+  lanes: [ml_ai, swe, security, sre_platform]
+
+- name: OpenAI
+  ats: ashby
+  token: openai
+  lanes: [ml_ai, swe, security, sre_platform]
+
+- name: Scale AI
+  ats: greenhouse
+  token: scaleai
+  lanes: [ml_ai, swe, solutions_eng]
+
+# --- Data & infra (added 2026-10-25) ---
+
+- name: Fivetran
+  ats: greenhouse
+  token: fivetran
+  lanes: [data_eng, solutions_eng, swe]
+
+- name: ClickHouse
+  ats: ashby
+  token: clickhouse
+  lanes: [data_eng, swe, sre_platform]
+
+# --- Security (added 2026-10-25) ---
+
+- name: Wiz
+  ats: greenhouse
+  token: wizinc
+  lanes: [security, swe, solutions_eng]
+
+- name: Dragos
+  ats: greenhouse
+  token: dragos
+  lanes: [security]
+
+# --- DC area (added 2026-10-25) ---
+
+- name: Appian
+  ats: greenhouse
+  token: appian
+  lanes: [swe, solutions_eng]
+
+- name: ID.me
+  ats: greenhouse
+  token: idme
+  lanes: [security, it_identity, swe]
+
+- name: Shield AI
+  ats: lever
+  token: shieldai
+  lanes: [swe, ml_ai]
+
+- name: HawkEye 360
+  ats: greenhouse
+  token: hawkeye360
+  lanes: [swe, data_eng]
+
+- name: Shift5
+  ats: greenhouse
+  token: shift5
+  lanes: [security, data_eng]
+
+- name: Vannevar Labs
+  ats: greenhouse
+  token: vannevarlabs
+  lanes: [swe, ml_ai]
+
+- name: Babel Street
+  ats: greenhouse
+  token: babelstreet
+  lanes: [data_eng, swe]
