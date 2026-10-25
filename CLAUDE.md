@@ -29,6 +29,29 @@ Greenhouse / Lever / Ashby public job-board APIs
 All AWS infrastructure is Terraform (remote state in S3). CI/CD via GitHub Actions using OIDC (no stored AWS keys).
 Decided 2026-10-25: go straight to AWS ("path B"), not a laptop-hosted interim. Site on S3 + CloudFront (not Vercel).
 
+## AWS ingestion design (decided 2026-10-25, not built yet)
+```
+EventBridge Scheduler (daily, America/New_York)
+   -> Lambda "ingest" (Python 3.13, one function, ~60s/run)
+        -> S3 raw bucket:  raw/source=<ats>/date=YYYY-MM-DD/<token>.json.gz
+        -> S3 raw bucket:  runs/date=YYYY-MM-DD/manifest.json   (run summary; feeds the status page later)
+        -> CloudWatch Logs + metrics -> alarms -> SNS -> email
+Terraform state: its own S3 bucket (versioned, native S3 locking via use_lockfile)
+```
+- Region: `us-east-1`. Single environment (prod); local runs are dev.
+- A: one Lambda loops all companies (fan-out only if it nears the 15-min limit).
+- B: `companies.yaml` is bundled in the deployment package (change = commit + deploy).
+- C: partial failure does NOT fail the Lambda (that would trigger async retries of all companies). Record failures in the manifest + a `companies_failed` metric and alarm on it. Fail only if everything failed.
+- D: separate buckets: `tfstate`, `raw`, `curated`, `site`. Lambda role can write only to `raw`. Block public access, SSE-S3 encryption, versioning on raw.
+- E: EventBridge Scheduler (timezone-aware), not EventBridge rules (UTC only).
+- F: zip package, deps built with `pip install --platform manylinux2014_x86_64 --only-binary=:all:` (building on Windows, running on Linux).
+- G: my access via IAM Identity Center + `aws sso login`; no IAM user access keys. GitHub Actions deploys via OIDC later.
+- Code changes: `run.py` writes gzipped files to S3 when `RAW_BUCKET` is set, else local disk; small Lambda handler calling `main()`; run manifest; `boto3` added to local venv only (Lambda runtime includes it). One-time backfill of local snapshots to S3.
+- Terraform layout: `infra/bootstrap/` (creates tfstate bucket, local state, run once), `infra/{main,s3,iam,lambda,schedule,alarms}.tf`.
+- Alarms (free tier): Lambda errors; companies_failed >= 1; freshness (no successful run in 26h, missing data = breaching).
+- Cost guardrails: never put the Lambda in a VPC (NAT gateway ~$32/mo); CloudWatch log retention 30 days; SSE-S3 not KMS CMKs ($1/key/mo); AWS Budgets alerts at $1 and $5 before creating anything else.
+- After Lambda has run cleanly for a few days alongside the laptop, disable the Windows task (`Disable-ScheduledTask JobMarketPulse-Ingest`).
+
 ## Current state
 Local ingestion works; AWS not started.
 - 2026-10-25 run: 37/37 companies, 12,885 postings, ~60s. Raw is ~171 MB/day, ~17 MB gzipped (~10x).
@@ -49,7 +72,15 @@ Local ingestion works; AWS not started.
 ## Where we left off (update at the end of each session)
 Last session: 2026-10-25
 - Done: venv + clean `requirements.txt`; daily Task Scheduler job; Ashby source; expanded to 37 companies (all verified against live APIs).
-- Next: decide the AWS ingestion design (S3 layout, Lambda, EventBridge, IAM, Terraform state, alerting), then build it with Terraform.
+- Decided: the AWS ingestion design above (all recommendations A–G accepted).
+- AWS account: exists, root MFA on. Free-tier type unknown (older 12-month free tier vs newer credit-based plan); check in the Billing console.
+- Tools: Terraform CLI and AWS CLI v2 are NOT installed (checked 2026-10-25).
+- Next session, in order (explain each step and wait for OK):
+  1. Install Terraform and AWS CLI v2 (e.g. `winget`).
+  2. Check the account's free-tier type; create AWS Budgets alerts ($1, $5).
+  3. Set up IAM Identity Center + a user/permission set for me; `aws configure sso`; stop using root.
+  4. Terraform bootstrap (tfstate bucket), then S3 + IAM + Lambda + Scheduler + alarms.
+  5. `run.py` S3 writer + manifest + Lambda handler; backfill local snapshots.
 - Then: week 2 transforms on the snapshots already collected; dashboard; status page and "matches for me" can follow launch.
 
 ## Data sources
