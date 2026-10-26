@@ -22,3 +22,7 @@ crash.log
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Claude Code (personal session notes and local settings)
+CLAUDE.md
+.claude/settings.local.json
