@@ -1,0 +1,6 @@
+# Laptop only: S3 writes, backfill, local tests. Not bundled into the Lambda
+# zip (the Lambda runtime already includes boto3).
+-r requirements.txt
+boto3==1.43.120
+# Lets boto3 use `aws login` credentials (AWS_PROFILE=jmp)
+botocore[crt]==1.43.120
