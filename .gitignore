@@ -2,6 +2,9 @@
 data/
 logs/
 
+# Lambda build output (scripts/build_lambda.ps1)
+build/
+
 # Python
 .venv/
 __pycache__/

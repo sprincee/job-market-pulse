@@ -3,6 +3,11 @@ output "raw_bucket" {
   value       = module.raw_bucket.id
 }
 
+output "ingest_function" {
+  description = "Lambda name, for manual invokes: aws lambda invoke --function-name <this>"
+  value       = aws_lambda_function.ingest.function_name
+}
+
 output "alerts_topic_arn" {
   description = "SNS topic that alarms notify"
   value       = aws_sns_topic.alerts.arn

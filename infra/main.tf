@@ -8,6 +8,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
+    # Zips the Lambda package locally; no cloud service involved.
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.0"
+    }
   }
 
   # Backend blocks can't use variables, so these values are literal.
