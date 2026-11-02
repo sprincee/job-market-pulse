@@ -1,0 +1,192 @@
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ef;
+  --line: #e4e3df;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --bar: #2a78d6;
+  --link: #1d5fb0;
+  --caution-bg: #fdf3dc;
+  --caution-line: #eda100;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #1a1a19;
+    --surface-2: #262625;
+    --line: #363634;
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --bar: #3987e5;
+    --link: #7fb2f0;
+    --caution-bg: #33290f;
+    --caution-line: #c98500;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #1a1a19;
+  --surface-2: #262625;
+  --line: #363634;
+  --text: #f0efec;
+  --text-2: #c3c2b7;
+  --bar: #3987e5;
+  --link: #7fb2f0;
+  --caution-bg: #33290f;
+  --caution-line: #c98500;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0 auto;
+  max-width: 880px;
+  padding: 0 16px;
+  background: var(--surface);
+  color: var(--text);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+a { color: var(--link); }
+
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 .5rem; letter-spacing: -.01em; }
+h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; }
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-weight: 650; color: var(--text); text-decoration: none; }
+
+.intro { margin-top: 2.5rem; }
+.lede { font-size: 1.15rem; color: var(--text-2); margin: 0; max-width: 42rem; }
+.crumb { margin-top: 1.5rem; font-size: .9rem; }
+.crumb + .intro { margin-top: 1rem; }
+
+/* Stat tiles */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 2rem 0 0;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.stats div { background: var(--surface); padding: .85rem 1rem; }
+.stats dt { font-size: .82rem; color: var(--text-2); }
+.stats dd { margin: .15rem 0 0; font-size: 1.35rem; font-weight: 600; }
+
+/* Role cards */
+.role-cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+}
+.role-cards a {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  height: 100%;
+  padding: .85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+.role-cards a:hover, .role-cards a:focus-visible { background: var(--surface-2); }
+.card-title { font-weight: 600; color: var(--link); }
+.card-skills { font-size: .92rem; }
+.card-meta { font-size: .82rem; color: var(--text-2); margin-top: auto; }
+
+/* Skill bars */
+.skills { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.skills caption { text-align: left; font-size: .9rem; color: var(--text-2); margin-bottom: .6rem; }
+.skills thead th { font-size: .8rem; font-weight: 500; color: var(--text-2); text-align: left; padding: 0 0 .35rem; border-bottom: 1px solid var(--line); }
+.skills th:first-child { width: 11rem; }
+.skills th:last-child { width: 6.5rem; }
+.skills tbody th { font-weight: 500; text-align: left; padding: .28rem .5rem .28rem 0; overflow-wrap: anywhere; }
+.skills td { padding: .28rem 0; }
+.skills tbody tr:hover, .skills tbody tr:focus { background: var(--surface-2); outline: none; }
+.num { text-align: right !important; font-variant-numeric: tabular-nums; }
+.skills td.num { padding-right: .25rem; color: var(--text-2); }
+
+.bar-cell { position: relative; }
+.bar-wrap { display: flex; align-items: center; gap: .45rem; }
+.bar {
+  display: block;
+  height: 14px;
+  /* fixed 0-100% scale; the value label keeps its own room at the tip */
+  width: calc((100% - 3rem) * var(--v) / 100);
+  min-width: 2px;
+  background: var(--bar);
+  border-radius: 0 4px 4px 0;
+}
+.value { font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Counts behind each bar, on hover or keyboard focus */
+.tip {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 100%;
+  padding: .3rem .55rem;
+  background: var(--text);
+  color: var(--surface);
+  border-radius: 4px;
+  font-size: .8rem;
+  white-space: nowrap;
+}
+.skills tr:hover .tip, .skills tr:focus .tip { display: block; }
+
+.all-skills { margin-top: 1rem; }
+.all-skills summary { cursor: pointer; color: var(--link); }
+.table-scroll { overflow-x: auto; margin-top: .75rem; }
+.plain { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.plain th, .plain td { padding: .3rem .6rem .3rem 0; border-bottom: 1px solid var(--line); text-align: left; font-weight: 400; white-space: nowrap; }
+.plain thead th { color: var(--text-2); font-size: .82rem; font-weight: 500; }
+
+.note { font-size: .92rem; color: var(--text-2); margin-top: 1.25rem; }
+.caution {
+  margin: 1.25rem 0 0;
+  padding: .7rem 1rem;
+  background: var(--caution-bg);
+  border-left: 3px solid var(--caution-line);
+  border-radius: 0 4px 4px 0;
+}
+
+.role-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; }
+
+.prose { max-width: 42rem; margin-top: 2.5rem; }
+.prose li { margin-bottom: .55rem; }
+.company-list { color: var(--text-2); }
+
+footer {
+  margin-top: 3.5rem;
+  padding: 1.25rem 0 2.5rem;
+  border-top: 1px solid var(--line);
+  font-size: .88rem;
+  color: var(--text-2);
+}
+footer p { margin: 0 0 .25rem; }
+
+@media (max-width: 640px) {
+  h1 { font-size: 1.7rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .role-cards { grid-template-columns: 1fr; }
+  .skills th:first-child { width: 7.5rem; }
+  .skills th:last-child { width: 4.75rem; }
+  .tip { white-space: normal; width: 13rem; }
+}

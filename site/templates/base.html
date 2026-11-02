@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Job Market Pulse{% endblock %}</title>
+  <meta name="description" content="Which tech skills should you learn next? Daily data on what employers ask for in their job postings.">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">Job Market Pulse</a>
+    <nav><a href="/methodology/">How this works</a></nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>Data as of {{ as_of }}. Updated daily from public job boards.</p>
+    <p>Built by Mahad Khan · <a href="https://github.com/sprincee/job-market-pulse">Source on GitHub</a></p>
+  </footer>
+</body>
+</html>

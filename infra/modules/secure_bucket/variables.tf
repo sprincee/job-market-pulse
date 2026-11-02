@@ -9,6 +9,12 @@ variable "versioning" {
   default     = false
 }
 
+variable "extra_policy_statements" {
+  description = "More bucket policy statements. A bucket has one policy, so callers add to it here"
+  type        = any
+  default     = []
+}
+
 variable "noncurrent_version_expiration_days" {
   description = "Days to keep a version after it is overwritten (only if versioning)"
   type        = number

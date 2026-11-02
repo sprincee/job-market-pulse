@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_skills.html" import skill_table, all_skills, stats %}
+{% block title %}{{ label }} skills in demand | Job Market Pulse{% endblock %}
+{% block content %}
+<nav class="crumb"><a href="/">All roles</a></nav>
+<section class="intro">
+  <h1>{{ label }}</h1>
+  <p class="lede">The skills employers mention most in open {{ label | lower }} roles.</p>
+</section>
+
+{{ stats(facts) }}
+
+{% if facts.roles < small_sample %}
+<p class="caution"><strong>Small sample.</strong> With only {{ facts.roles }} open roles, a few postings can move these percentages a lot.</p>
+{% endif %}
+
+<section>
+  <h2>Top {{ top_n if skills | length > top_n else skills | length }} skills</h2>
+  {{ skill_table(skills, top_n, "Share of open " ~ (label | lower) ~ " roles and of companies mentioning each skill") }}
+  {{ all_skills(skills) }}
+</section>
+
+<section>
+  <h2>Other roles</h2>
+  <ul class="role-links">
+    {% for s, l in roles.items() if s != slug %}
+    <li><a href="/roles/{{ s }}/">{{ l }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

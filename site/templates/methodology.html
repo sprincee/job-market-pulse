@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}How this works | Job Market Pulse{% endblock %}
+{% block content %}
+<article class="prose">
+  <h1>How this works</h1>
+  <p class="lede">Job Market Pulse reads the public job boards of {{ companies | length }} companies every day and counts which skills their postings mention.</p>
+
+  <h2>Where the data comes from</h2>
+  <p>Postings come from the public job board APIs of Greenhouse, Lever and Ashby, the hiring systems these companies use. Collection started on {{ first_day }}, with {{ days }} daily snapshots and {{ "{:,}".format(postings) }} distinct postings so far. Sites that don't allow it, like LinkedIn and Indeed, aren't scraped.</p>
+
+  <h2>How the numbers are counted</h2>
+  <ul>
+    <li><strong>Roles come from job titles.</strong> Each title is matched to one role by a list of rules. The responsibilities in the posting aren't considered. People managers, sales, recruiting and similar titles are left out.</li>
+    <li><strong>One job in many cities counts once.</strong> A "role" here means one company and job title. Percentages are shares of these unique roles among postings currently open.</li>
+    <li><strong>Skills come from a dictionary of {{ skill_count }} patterns</strong> matched against the title and description. A company naming its own product doesn't count, so Snowflake's postings don't count toward Snowflake.</li>
+    <li><strong>Share of companies</strong> keeps big employers from dominating: one company with hundreds of open roles still counts as one company.</li>
+  </ul>
+
+  <h2>What this can't tell you</h2>
+  <ul>
+    <li><strong>It isn't the whole job market.</strong> These are mostly tech, AI and defense companies, so skills popular there, like Go, rank higher than they would across all employers.</li>
+    <li><strong>Many large employers are missing.</strong> Those using Workday, including many in government contracting, have no clean public API. Banks, hospitals and retailers are mostly absent too.</li>
+    <li><strong>A mention isn't a requirement.</strong> A "nice to have" counts the same as a "must have", and a skill can appear in a company's general description.</li>
+    <li><strong>Matching isn't perfect.</strong> A spot check of about 200 random samples estimated 85–90% were correct. That wasn't a formal measurement, and it doesn't capture mentions the patterns missed.</li>
+    <li><strong>Generic titles are left out.</strong> A title like "Staff Engineer" doesn't name a role, so it isn't counted.</li>
+    <li><strong>Remote share is a minimum.</strong> Many postings don't state a work mode, so "at least" means the true number could be higher.</li>
+    <li><strong>Salaries aren't covered yet</strong>, and trends need more history than this project has so far.</li>
+  </ul>
+
+  <h2>Companies tracked</h2>
+  <p class="company-list">{% for c in companies %}{{ c.company_name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+
+  <h2>How it's built</h2>
+  <p>A scheduled AWS Lambda collects the postings into S3. dbt and DuckDB turn them into tables, and this static site is rebuilt from them. All of it is defined in Terraform and open source: <a href="https://github.com/sprincee/job-market-pulse">see the code on GitHub</a>.</p>
+</article>
+{% endblock %}

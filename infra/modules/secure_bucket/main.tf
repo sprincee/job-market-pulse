@@ -55,7 +55,7 @@ resource "aws_s3_bucket_policy" "this" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
+    Statement = concat([{
       Sid       = "DenyInsecureTransport"
       Effect    = "Deny"
       Principal = "*"
@@ -67,7 +67,7 @@ resource "aws_s3_bucket_policy" "this" {
       Condition = {
         Bool = { "aws:SecureTransport" = "false" }
       }
-    }]
+    }], var.extra_policy_statements)
   })
 
   depends_on = [aws_s3_bucket_public_access_block.this]

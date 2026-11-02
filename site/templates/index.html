@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_skills.html" import skill_table, all_skills, stats %}
+{% block title %}Job Market Pulse: which tech skills to learn next{% endblock %}
+{% block content %}
+<section class="intro">
+  <h1>Which tech skills should you learn next?</h1>
+  <p class="lede">What {{ facts.companies }} tech employers are asking for right now, counted from their live job postings every day.</p>
+</section>
+
+{{ stats(facts) }}
+
+<section>
+  <h2>Pick the kind of role you want</h2>
+  <ul class="role-cards">
+    {% for c in cards %}
+    <li>
+      <a href="/roles/{{ c.slug }}/">
+        <span class="card-title">{{ c.label }}</span>
+        <span class="card-skills">{{ c.top | join(", ") }}</span>
+        <span class="card-meta">{{ "{:,}".format(c.facts.roles) }} open roles</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h2>Most requested across all tech roles</h2>
+  {{ skill_table(skills, top_n, "Share of open tech roles and of companies mentioning each skill") }}
+  {{ all_skills(skills) }}
+  <p class="note">These {{ facts.companies }} companies are mostly in tech, AI and defense, so this isn't the whole job market. <a href="/methodology/">How this works and what it can't tell you</a>.</p>
+</section>
+{% endblock %}

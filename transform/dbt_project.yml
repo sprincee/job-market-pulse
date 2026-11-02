@@ -12,3 +12,8 @@ seed-paths: ["seeds"]
 
 vars:
   raw_path: data/raw
+
+models:
+  job_market_pulse:
+    marts:
+      +materialized: table
