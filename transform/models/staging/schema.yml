@@ -1,0 +1,23 @@
+models:
+  - name: stg_postings_daily
+    description: One row per posting per day it was listed.
+    columns:
+      - name: posting_key
+        data_tests: [not_null]
+      - name: snapshot_date
+        data_tests: [not_null]
+      - name: title
+        data_tests: [not_null]
+      - name: source
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [greenhouse, lever, ashby]
+
+  - name: stg_posting_text
+    description: One row per posting, holding its latest cleaned description.
+    columns:
+      - name: posting_key
+        data_tests: [not_null, unique]
+      - name: body_text
+        data_tests: [not_null]

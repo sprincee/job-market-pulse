@@ -5,6 +5,11 @@ logs/
 # Lambda build output (scripts/build_lambda.ps1)
 build/
 
+# dbt build output (the DuckDB warehouse lives under data/)
+transform/target/
+transform/dbt_packages/
+.user.yml
+
 # Python
 .venv/
 __pycache__/

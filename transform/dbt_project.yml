@@ -1,0 +1,14 @@
+# Run from the repo root:
+#   dbt build --project-dir transform --profiles-dir transform
+# Relative paths (raw_path, the DuckDB file) resolve from the repo root.
+name: job_market_pulse
+version: "0.1.0"
+profile: job_market_pulse
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+
+vars:
+  raw_path: data/raw

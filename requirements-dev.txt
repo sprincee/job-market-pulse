@@ -4,3 +4,7 @@
 boto3==1.43.120
 # Lets boto3 use `aws login` credentials (AWS_PROFILE=jmp)
 botocore[crt]==1.43.120
+# Transforms (transform/)
+dbt-core==1.12.6
+dbt-duckdb==1.11.1
+duckdb==2.0.0

@@ -1,0 +1,8 @@
+# One DuckDB file holds all incremental state. No credentials live here.
+job_market_pulse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('JMP_DUCKDB_PATH', 'data/warehouse/jmp.duckdb') }}"
+      threads: 1
