@@ -19,10 +19,12 @@ data "aws_iam_policy_document" "github_assume" {
       values   = ["sts.amazonaws.com"]
     }
     # Only this repo's master branch: forks and pull requests can't assume the role.
+    # GitHub's subject format is repo:<owner>@<owner id>/<repo>@<repo id>:ref:... Matching
+    # on the permanent IDs still identifies this one repo if it or its owner is renamed.
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:sprincee/job-market-pulse:ref:refs/heads/master"]
+      values   = ["repo:*@87615605/*@1426006766:ref:refs/heads/master"]
     }
   }
 }

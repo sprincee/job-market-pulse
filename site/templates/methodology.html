@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}How this works | Job Market Pulse{% endblock %}
+{% block title %}How this works | Worth Learning{% endblock %}
 {% block content %}
 <article class="prose">
   <h1>How this works</h1>
-  <p class="lede">Job Market Pulse reads the public job boards of {{ companies | length }} companies every day and counts which skills their postings mention.</p>
+  <p class="lede">Worth Learning reads the public job boards of {{ companies | length }} companies every day and counts which skills their postings mention.</p>
 
   <h2>Where the data comes from</h2>
   <p>Postings come from the public job board APIs of Greenhouse, Lever and Ashby, the hiring systems these companies use. Collection started on {{ first_day }}, with {{ days }} daily snapshots and {{ "{:,}".format(postings) }} distinct postings so far. Sites that don't allow it, like LinkedIn and Indeed, aren't scraped.</p>
