@@ -4,20 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Job Market Pulse{% endblock %}</title>
-  <meta name="description" content="Which tech skills should you learn next? Daily data on what employers ask for in their job postings.">
+  <meta name="description" content="Which tech skills should you learn next? Daily counts of what employers ask for in their live job postings.">
+  <meta property="og:title" content="Job Market Pulse">
+  <meta property="og:description" content="Which tech skills should you learn next? Daily counts of what employers ask for in their live job postings.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141413'/%3E%3Crect x='3' y='9' width='10' height='3' fill='%23F7F5F0'/%3E%3Crect x='3' y='4' width='6' height='3' fill='%23E8623A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <header class="site-header">
+  <header class="masthead">
     <a class="brand" href="/">Job Market Pulse</a>
-    <nav><a href="/methodology/">How this works</a></nav>
+    <p class="dateline">Data as of {{ as_of }}</p>
+    <nav aria-label="Main"><a href="/methodology/">How this works</a></nav>
   </header>
   <main>
     {% block content %}{% endblock %}
   </main>
   <footer>
-    <p>Data as of {{ as_of }}. Updated daily from public job boards.</p>
-    <p>Built by Mahad Khan · <a href="https://github.com/sprincee/job-market-pulse">Source on GitHub</a></p>
+    <p>Counted daily from public job boards. Built by Mahad Khan.</p>
+    <p><a href="/methodology/">How this works</a> <a href="https://github.com/sprincee/job-market-pulse">Source on GitHub</a></p>
   </footer>
 </body>
 </html>

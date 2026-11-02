@@ -1,23 +1,29 @@
 {# Ranked skill bars on a fixed 0-100% scale, so lengths compare across pages. The
    chart is a real table: every value is printed, and no JavaScript is needed. #}
-{% macro skill_table(skills, limit, caption) %}
+{% macro skill_table(skills, limit, caption, compare=false) %}
 <table class="skills">
   <caption>{{ caption }}</caption>
   <thead>
-    <tr><th scope="col">Skill</th><th scope="col">Share of roles</th><th scope="col" class="num">Share of companies</th></tr>
+    <tr>
+      <th scope="col">Skill</th>
+      <th scope="col"><span class="visually-hidden">Share of roles, as a bar</span></th>
+      <th scope="col" class="num">% of roles</th>
+      <th scope="col" class="num">% of companies</th>
+    </tr>
   </thead>
   <tbody>
     {% for s in skills[:limit] %}
-    <tr tabindex="0">
+    <tr tabindex="0"{% if s.high %} class="is-high"{% endif %}>
       <th scope="row">{{ s.skill }}</th>
       <td class="bar-cell">
-        <div class="bar-wrap">
+        <span class="track">
           <span class="bar" style="--v: {{ s.pct_of_roles }}"></span>
-          <span class="value">{{ s.pct_of_roles | round | int }}%</span>
-        </div>
-        <span class="tip">{{ s.roles_mentioning }} of {{ s.roles_total }} roles · {{ s.companies_mentioning }} of {{ s.companies_total }} companies</span>
+          {% if compare %}<span class="tick" style="--v: {{ s.overall }}"></span>{% endif %}
+        </span>
+        <span class="tip">{{ s.roles_mentioning }} of {{ s.roles_total }} roles · {{ s.companies_mentioning }} of {{ s.companies_total }} companies{% if compare %} · {{ s.overall | round | int }}% across all tech roles{% endif %}</span>
       </td>
-      <td class="num">{{ s.pct_of_companies | round | int }}%</td>
+      <td class="num value">{{ s.pct_of_roles | round | int }}%{% if s.high %}<span class="gap">+{{ s.gap }} pts</span>{% endif %}</td>
+      <td class="num muted">{{ s.pct_of_companies | round | int }}%</td>
     </tr>
     {% endfor %}
   </tbody>
@@ -27,10 +33,10 @@
 {% macro all_skills(skills) %}
 <details class="all-skills">
   <summary>See all {{ skills | length }} skills</summary>
-  <div class="table-scroll">
+  <div class="table-scroll" tabindex="0" role="region" aria-label="All skills">
     <table class="plain">
       <thead>
-        <tr><th scope="col">Skill</th><th scope="col">Category</th><th scope="col" class="num">Roles</th><th scope="col" class="num">Share of roles</th><th scope="col" class="num">Companies</th><th scope="col" class="num">Share of companies</th></tr>
+        <tr><th scope="col">Skill</th><th scope="col">Category</th><th scope="col" class="num">Roles</th><th scope="col" class="num">% of roles</th><th scope="col" class="num">Companies</th><th scope="col" class="num">% of companies</th></tr>
       </thead>
       <tbody>
         {% for s in skills %}
@@ -42,9 +48,9 @@
 </details>
 {% endmacro %}
 
-{% macro stats(facts) %}
-<dl class="stats">
-  <div><dt>Open roles analyzed</dt><dd>{{ "{:,}".format(facts.roles) }}</dd></div>
+{% macro ledger(facts) %}
+<dl class="ledger">
+  <div><dt>Open roles</dt><dd>{{ "{:,}".format(facts.roles) }}</dd></div>
   <div><dt>Companies hiring</dt><dd>{{ facts.companies }}</dd></div>
   <div><dt>New in the last 7 days</dt><dd>{{ "{:,}".format(facts.new_7d) }}</dd></div>
   <div><dt>Listed as remote</dt><dd>At least {{ facts.remote_pct | int }}%</dd></div>

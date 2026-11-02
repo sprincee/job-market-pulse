@@ -13,7 +13,8 @@
     <li><strong>Roles come from job titles.</strong> Each title is matched to one role by a list of rules. The responsibilities in the posting aren't considered. People managers, sales, recruiting and similar titles are left out.</li>
     <li><strong>One job in many cities counts once.</strong> A "role" here means one company and job title. Percentages are shares of these unique roles among postings currently open.</li>
     <li><strong>Skills come from a dictionary of {{ skill_count }} patterns</strong> matched against the title and description. A company naming its own product doesn't count, so Snowflake's postings don't count toward Snowflake.</li>
-    <li><strong>Share of companies</strong> keeps big employers from dominating: one company with hundreds of open roles still counts as one company.</li>
+    <li><strong>% of companies</strong> keeps big employers from dominating: one company with hundreds of open roles still counts as one company.</li>
+    <li><strong>"What sets this role apart" uses percentage points.</strong> +39 means a skill's share in this role is 39 points above its share across all tech roles, a group that includes the role itself. Up to {{ signature_n }} skills are shown, each at least {{ min_gap }} points above and mentioned by at least {{ min_mentions }} roles. Points are used rather than ratios because ratios favor rare skills: 2% against 0.2% is ten times as much, but it's still only 2% of jobs.</li>
   </ul>
 
   <h2>What this can't tell you</h2>
@@ -31,6 +32,6 @@
   <p class="company-list">{% for c in companies %}{{ c.company_name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
 
   <h2>How it's built</h2>
-  <p>A scheduled AWS Lambda collects the postings into S3. dbt and DuckDB turn them into tables, and this static site is rebuilt from them. All of it is defined in Terraform and open source: <a href="https://github.com/sprincee/job-market-pulse">see the code on GitHub</a>.</p>
+  <p>A scheduled AWS Lambda collects the postings into S3. dbt and DuckDB turn them into tables, and this static site is rebuilt from them each day. All of it is defined in Terraform and open source: <a href="https://github.com/sprincee/job-market-pulse">see the code on GitHub</a>.</p>
 </article>
 {% endblock %}

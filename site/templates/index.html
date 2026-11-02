@@ -1,33 +1,44 @@
 {% extends "base.html" %}
-{% from "_skills.html" import skill_table, all_skills, stats %}
+{% from "_skills.html" import skill_table, all_skills, ledger %}
 {% block title %}Job Market Pulse: which tech skills to learn next{% endblock %}
 {% block content %}
-<section class="intro">
-  <h1>Which tech skills should you learn next?</h1>
-  <p class="lede">What {{ facts.companies }} tech employers are asking for right now, counted from their live job postings every day.</p>
+{% set lead = skills[0] %}
+<section class="hero">
+  <h1>{{ lead.skill }} shows up in {{ lead.pct_of_roles | round | int }}% of open tech roles.</h1>
+  <div class="meter" role="img" aria-label="{{ lead.pct_of_roles | round | int }} percent of open tech roles mention {{ lead.skill }}">
+    <span class="meter-fill" style="--v: {{ lead.pct_of_roles }}"></span>
+  </div>
+  <div class="hero-foot">
+    <p class="lede">So what should you learn next? This site reads the job boards of {{ facts.companies }} tech, AI and defense companies every day and counts what they actually ask for. Pick the kind of role you want.</p>
+    {{ ledger(facts) }}
+  </div>
 </section>
 
-{{ stats(facts) }}
-
-<section>
-  <h2>Pick the kind of role you want</h2>
-  <ul class="role-cards">
+<section class="section">
+  <h2>By role</h2>
+  <ul class="role-index">
     {% for c in cards %}
     <li>
       <a href="/roles/{{ c.slug }}/">
-        <span class="card-title">{{ c.label }}</span>
-        <span class="card-skills">{{ c.top | join(", ") }}</span>
-        <span class="card-meta">{{ "{:,}".format(c.facts.roles) }} open roles</span>
+        <span class="role-name">{{ c.label }}</span>
+        <span class="role-top">{{ c.top | join(", ") }}</span>
+        <span class="role-signature">{% if c.signature %}{{ c.signature.skill }}: {{ c.signature.pct_of_roles | round | int }}% vs. {{ c.signature.overall | round | int }}%{% endif %}</span>
+        <span class="role-count">{{ "{:,}".format(c.facts.roles) }} roles <span aria-hidden="true">→</span></span>
       </a>
     </li>
     {% endfor %}
   </ul>
+  <p class="note">Each row shows a role's three most requested skills, then the skill furthest above its share across all tech roles.</p>
 </section>
 
-<section>
-  <h2>Most requested across all tech roles</h2>
-  {{ skill_table(skills, top_n, "Share of open tech roles and of companies mentioning each skill") }}
-  {{ all_skills(skills) }}
-  <p class="note">These {{ facts.companies }} companies are mostly in tech, AI and defense, so this isn't the whole job market. <a href="/methodology/">How this works and what it can't tell you</a>.</p>
+<section class="section split">
+  <div class="split-side">
+    <h2>The whole market</h2>
+    <p class="note">The {{ top_n }} skills mentioned most across every tech role tracked. These companies lean toward tech, AI and defense, so this isn't the whole job market. <a href="/methodology/">What this can and can't tell you</a>.</p>
+  </div>
+  <div class="split-main">
+    {{ skill_table(skills, top_n, "Share of open tech roles and of companies mentioning each skill") }}
+    {{ all_skills(skills) }}
+  </div>
 </section>
 {% endblock %}

@@ -1,0 +1,60 @@
+# Daily: load new raw data, test it, publish the site. If dbt's tests fail, the
+# job stops before anything is uploaded, so the last good site stays up and the
+# next run retries the same days.
+name: Daily build
+
+on:
+  schedule:
+    - cron: "0 20 * * *" # 3-4pm ET, about an hour or more after the 2pm ET Lambda; GitHub may start it late
+  workflow_dispatch:
+
+permissions:
+  id-token: write # lets the job exchange a GitHub token for short-lived AWS credentials
+  contents: read
+
+concurrency:
+  group: daily-build
+  cancel-in-progress: false
+
+env:
+  RAW_BUCKET: jmp-raw-723951823306
+  CURATED_BUCKET: jmp-curated-723951823306
+  SITE_BUCKET: jmp-site-723951823306
+  DISTRIBUTION_ID: E1BAB6VMUG74KX
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - run: pip install -r requirements-dev.txt
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::723951823306:role/jmp-github-daily-build
+          aws-region: us-east-1
+
+      - name: Download the warehouse and new raw days
+        run: python scripts/pipeline_state.py pull
+
+      - name: Build and test the tables
+        run: dbt build --project-dir transform --profiles-dir transform
+
+      - name: Save the warehouse and export Parquet
+        run: python scripts/pipeline_state.py push
+
+      - name: Build the site
+        run: python site/build.py
+
+      - name: Publish
+        run: |
+          aws s3 sync build/site "s3://$SITE_BUCKET" --delete --no-progress
+          aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths "/*" --query Invalidation.Status --output text

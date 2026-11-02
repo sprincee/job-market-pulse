@@ -1,26 +1,58 @@
 {% extends "base.html" %}
-{% from "_skills.html" import skill_table, all_skills, stats %}
+{% from "_skills.html" import skill_table, all_skills, ledger %}
 {% block title %}{{ label }} skills in demand | Job Market Pulse{% endblock %}
 {% block content %}
-<nav class="crumb"><a href="/">All roles</a></nav>
-<section class="intro">
-  <h1>{{ label }}</h1>
-  <p class="lede">The skills employers mention most in open {{ label | lower }} roles.</p>
+{% set lead = signature[0] if signature else skills[0] %}
+<nav class="crumb" aria-label="Breadcrumb"><a href="/">← All roles</a></nav>
+<section class="hero hero-role">
+  <p class="kicker">{{ label }}</p>
+  <h1>{{ lead.skill }} is in {{ lead.pct_of_roles | round | int }}% of these roles, vs. {{ lead.overall | round | int }}% across tech.</h1>
+  <div class="meter" role="img" aria-label="{{ lead.pct_of_roles | round | int }} percent of these roles mention {{ lead.skill }}, compared with {{ lead.overall | round | int }} percent across all tech roles">
+    <span class="meter-fill" style="--v: {{ lead.pct_of_roles }}"></span>
+    <span class="tick" style="--v: {{ lead.overall }}"></span>
+  </div>
+  <div class="hero-foot">
+    <p class="lede">The skills employers mention most in open {{ in_sentence }} roles, and how each compares with tech as a whole.</p>
+    {{ ledger(facts) }}
+  </div>
 </section>
-
-{{ stats(facts) }}
 
 {% if facts.roles < small_sample %}
 <p class="caution"><strong>Small sample.</strong> With only {{ facts.roles }} open roles, a few postings can move these percentages a lot.</p>
 {% endif %}
 
-<section>
-  <h2>Top {{ top_n if skills | length > top_n else skills | length }} skills</h2>
-  {{ skill_table(skills, top_n, "Share of open " ~ (label | lower) ~ " roles and of companies mentioning each skill") }}
-  {{ all_skills(skills) }}
+{% if signature %}
+<section class="section">
+  <h2>What sets this role apart</h2>
+  <ol class="signature">
+    {% for s in signature %}
+    <li>
+      <span class="sig-gap">+{{ s.gap }}</span>
+      <span class="sig-skill">{{ s.skill }}</span>
+      <span class="sig-detail">{{ s.pct_of_roles | round | int }}% here, {{ s.overall | round | int }}% overall</span>
+    </li>
+    {% endfor %}
+  </ol>
+  <p class="note">Percentage points above the share of all tech roles.</p>
+</section>
+{% endif %}
+
+<section class="section split">
+  <div class="split-side">
+    <h2>Most requested</h2>
+    <ul class="legend">
+      <li><span class="key key-bar"></span>Share of these roles</li>
+      {% if signature %}<li><span class="key key-high"></span>Furthest above tech overall</li>{% endif %}
+      <li><span class="key key-tick"></span>Share across all tech roles</li>
+    </ul>
+  </div>
+  <div class="split-main">
+    {{ skill_table(skills, top_n, "Share of open " ~ in_sentence ~ " roles and of companies mentioning each skill", compare=true) }}
+    {{ all_skills(skills) }}
+  </div>
 </section>
 
-<section>
+<section class="section">
   <h2>Other roles</h2>
   <ul class="role-links">
     {% for s, l in roles.items() if s != slug %}
