@@ -3,37 +3,51 @@
 {% block content %}
 <article class="prose">
   <h1>How this works</h1>
-  <p class="lede">Worth Learning reads the public job boards of {{ companies | length }} companies every day and counts which skills their postings mention.</p>
+  <p class="lede">I'm a grad student looking for work in tech, and "what should I learn next?" is a question I kept asking myself. So I built something that reads job postings every day and counts what employers actually ask for.</p>
 
   <h2>Where the data comes from</h2>
-  <p>Postings come from the public job board APIs of Greenhouse, Lever and Ashby, the hiring systems these companies use. Collection started on {{ first_day }}, with {{ days }} daily snapshots and {{ "{:,}".format(postings) }} distinct postings so far. Sites that don't allow it, like LinkedIn and Indeed, aren't scraped.</p>
+  <p>Every day, this site pulls the open jobs from {{ companies | length }} companies' public job boards. Those boards run on three hiring systems, Greenhouse, Lever and Ashby, and all three offer public feeds that don't require a login. I don't scrape LinkedIn or Indeed.</p>
+  <p>The first collection was on {{ first_day }}, with just 10 companies. The full list has been running since October 25, after a gap from October 20 to 24. So far that's {{ days }} days of data and {{ "{:,}".format(postings) }} different postings.</p>
 
-  <h2>How the numbers are counted</h2>
+  <h2>How I count</h2>
   <ul>
-    <li><strong>Roles come from job titles.</strong> Each title is matched to one role by a list of rules. The responsibilities in the posting aren't considered. People managers, sales, recruiting and similar titles are left out.</li>
-    <li><strong>One job in many cities counts once.</strong> A "role" here means one company and job title. Percentages are shares of these unique roles among postings currently open.</li>
-    <li><strong>Skills come from a dictionary of {{ skill_count }} patterns</strong> matched against the title and description. A company naming its own product doesn't count, so Snowflake's postings don't count toward Snowflake.</li>
-    <li><strong>% of companies</strong> keeps big employers from dominating: one company with hundreds of open roles still counts as one company.</li>
-    <li><strong>"What sets this role apart" uses percentage points.</strong> +39 means a skill's share in this role is 39 points above its share across all tech roles, a group that includes the role itself. Up to {{ signature_n }} skills are shown, each at least {{ min_gap }} points above and mentioned by at least {{ min_mentions }} roles. Points are used rather than ratios because ratios favor rare skills: 2% against 0.2% is ten times as much, but it's still only 2% of jobs.</li>
+    <li><strong>A role comes from the job title.</strong> "Site Reliability Engineer" goes in SRE and platform. I don't read the responsibilities to decide. People managers, sales, recruiting and similar titles are left out.</li>
+    <li><strong>One job counts once.</strong> A job listed in 15 cities is one role, so "role" here means one company and one title. Percentages only cover jobs that are open right now.</li>
+    <li><strong>Skills come from a list I keep.</strong> There are {{ skill_count }} of them, each with its own search pattern. This is fussier than it sounds: searching for "Go" also finds "go to market", so that pattern looks for clues like "Python, Go".</li>
+    <li><strong>Companies don't count toward their own products.</strong> Snowflake's job ads naturally say "Snowflake", and that isn't evidence anyone else wants it.</li>
+    <li><strong>% of companies stops big employers from taking over.</strong> One company can have hundreds of open roles, but it still counts as one company.</li>
+  </ul>
+
+  <h2>What the pages show</h2>
+  <ul>
+    <li><strong>Role pages</strong> compare each skill's share with its share across all tech roles. "+39" means 39 percentage points above that overall share. I show up to {{ signature_n }} of these, and each needs to be at least {{ min_gap }} points higher and mentioned by at least {{ min_mentions }} roles.</li>
+    <li><strong>Why points, and not "10× more likely"?</strong> Multipliers flatter rare skills. Going from 0.2% to 2% is ten times as much, but it's still only 2% of jobs. Points do a better job of showing what's worth your time.</li>
+    <li><strong>Skill pages</strong> show which roles and companies ask for a skill.</li>
+    <li><strong>Internships and entry level</strong> is based on title words like intern, new grad and junior. It skips anything with a senior-sounding title.</li>
+    <li><strong>"Recently posted"</strong> links to real postings, up to 25 per list and at most 3 per company, so it's a sample rather than every opening. "First seen" is the day this site first noticed a job, which may be later than the day it was posted.</li>
   </ul>
 
   <h2>What this can't tell you</h2>
   <ul>
-    <li><strong>"Entry level" is a title match.</strong> It looks for words like intern, new grad and junior, and leaves out senior titles. Real entry-level jobs with plain titles aren't counted, and a few companies make up much of this group.</li>
-    <li><strong>Job links can go stale.</strong> They come from the latest daily snapshot, so a posting may close before the next update. Each list is a sample of up to 25 roles, not every opening.</li>
-    <li><strong>It isn't the whole job market.</strong> These are mostly tech, AI and defense companies, so skills popular there, like Go, rank higher than they would across all employers.</li>
-    <li><strong>Many large employers are missing.</strong> Those using Workday, including many in government contracting, have no clean public API. Banks, hospitals and retailers are mostly absent too.</li>
-    <li><strong>A mention isn't a requirement.</strong> A "nice to have" counts the same as a "must have", and a skill can appear in a company's general description.</li>
-    <li><strong>Matching isn't perfect.</strong> A spot check of about 200 random samples estimated 85–90% were correct. That wasn't a formal measurement, and it doesn't capture mentions the patterns missed.</li>
-    <li><strong>Generic titles are left out.</strong> A title like "Staff Engineer" doesn't name a role, so it isn't counted.</li>
-    <li><strong>Remote share is a minimum.</strong> Many postings don't state a work mode, so "at least" means the true number could be higher.</li>
-    <li><strong>Salaries aren't covered yet</strong>, and trends need more history than this project has so far.</li>
+    <li><strong>This isn't the whole job market.</strong> These are mostly tech, AI and defense companies, so skills popular there, like Go, rank higher here than they would across all employers. Banks, hospitals and retailers are mostly missing.</li>
+    <li><strong>Many big employers are missing.</strong> A lot of them, including many government contractors, use Workday, which has no clean public feed.</li>
+    <li><strong>A mention isn't a requirement.</strong> "Nice to have" counts the same as "must have". I remove company intros where the job board marks them, but some of that text gets through.</li>
+    <li><strong>The matching makes mistakes.</strong> I spot-checked about 200 random samples and estimated that 85–90% were right. That was a rough check, not a formal measurement, and it can't tell me what the patterns missed.</li>
+    <li><strong>Vague titles get left out.</strong> "Staff Engineer" doesn't say what the job is, so it isn't counted in any role. Plainly titled entry-level jobs are missed for the same reason, and a few companies make up much of the entry-level group.</li>
+    <li><strong>Remote numbers are a minimum.</strong> Many postings don't say, which is why you'll see "at least".</li>
+    <li><strong>Small groups are jumpy.</strong> When a role has fewer than {{ small_sample }} openings, a few postings can move the numbers a lot. Those pages carry a warning.</li>
+    <li><strong>Job links can go stale.</strong> A posting might close before the next daily update.</li>
+    <li><strong>There's no salary data or long-term trends yet.</strong> Trends need more history than this project has so far.</li>
   </ul>
 
   <h2>Companies tracked</h2>
   <p class="company-list">{% for c in companies %}{{ c.company_name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
 
+  <h2>Privacy</h2>
+  <p>This site has no cookies, accounts or tracking scripts. AWS gives me basic traffic totals, like the number of requests by country and device, and I can't see who you are from those. Fonts load from Google, so Google sees that request.</p>
+
   <h2>How it's built</h2>
-  <p>A scheduled AWS Lambda collects the postings into S3. dbt and DuckDB turn them into tables, and this static site is rebuilt from them each day. All of it is defined in Terraform and open source: <a href="https://github.com/sprincee/job-market-pulse">see the code on GitHub</a>.</p>
+  <p>An AWS Lambda function collects the postings each afternoon and stores them in S3. dbt and DuckDB then turn them into tables, and if the data tests pass, a small Python script rebuilds this site. If they fail, the last good version stays up. The date at the top of each page tells you how fresh the data is.</p>
+  <p>You can <a href="https://github.com/sprincee/job-market-pulse">read the code on GitHub</a>. If something looks wrong, that's also the best place to tell me.</p>
 </article>
 {% endblock %}

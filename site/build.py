@@ -212,7 +212,7 @@ def main() -> None:
     render("index.html", "index.html", facts=facts_for(con), skills=market, cards=cards)
     render("methodology.html", "methodology/index.html",
            companies=rows(con, "select company_name, ats from dim_company order by lower(company_name)"),
-           days=days, first_day=first_day.isoformat(),
+           days=days, first_day=first_day.strftime("%B ") + str(first_day.day),
            postings=con.execute("select count(*) from fct_postings").fetchone()[0],
            skill_count=con.execute("select count(*) from skills").fetchone()[0])
     log.info("built %s (data as of %s, %d skill pages)", OUT, as_of, len(market))
