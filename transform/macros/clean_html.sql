@@ -3,7 +3,7 @@
    describe the company or offer, not what the job requires. #}
 {% macro clean_html(col) %}
 trim(regexp_replace(
-  regexp_replace(
+  replace(regexp_replace(
     replace(replace(replace(replace(replace(
       regexp_replace(
         regexp_replace(
@@ -12,6 +12,6 @@ trim(regexp_replace(
           '(?s)<div class="content-(intro|conclusion|pay-transparency)">.*?</div>', ' ', 'g'),
         '<[^>]+>', ' ', 'g'),
       '&amp;', '&'), '&lt;', '<'), '&gt;', '>'), '&quot;', '"'), '&#39;', ''''),
-    '&#?[a-zA-Z0-9]+;', ' ', 'g'),
+    '&#?[a-zA-Z0-9]+;', ' ', 'g'), chr(160), ' '),
   '\s+', ' ', 'g'))
 {% endmacro %}

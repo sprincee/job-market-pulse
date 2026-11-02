@@ -1,0 +1,38 @@
+company_token,company_name,ats
+airbnb,Airbnb,greenhouse
+andurilindustries,Anduril,greenhouse
+anthropic,Anthropic,greenhouse
+appian,Appian,greenhouse
+babelstreet,Babel Street,greenhouse
+clickhouse,ClickHouse,ashby
+cloudflare,Cloudflare,greenhouse
+coinbase,Coinbase,greenhouse
+databricks,Databricks,greenhouse
+datadog,Datadog,greenhouse
+doordashusa,DoorDash,greenhouse
+dragos,Dragos,greenhouse
+elastic,Elastic,greenhouse
+figma,Figma,greenhouse
+fivetran,Fivetran,greenhouse
+gitlab,GitLab,greenhouse
+grafanalabs,Grafana Labs,greenhouse
+hawkeye360,HawkEye 360,greenhouse
+idme,ID.me,greenhouse
+mongodb,MongoDB,greenhouse
+okta,Okta,greenhouse
+openai,OpenAI,ashby
+palantir,Palantir,lever
+ramp,Ramp,ashby
+reddit,Reddit,greenhouse
+robinhood,Robinhood,greenhouse
+roblox,Roblox,greenhouse
+samsara,Samsara,greenhouse
+scaleai,Scale AI,greenhouse
+shieldai,Shield AI,lever
+shift5,Shift5,greenhouse
+snowflake,Snowflake,ashby
+stripe,Stripe,greenhouse
+vannevarlabs,Vannevar Labs,greenhouse
+vercel,Vercel,greenhouse
+waymo,Waymo,greenhouse
+wizinc,Wiz,greenhouse

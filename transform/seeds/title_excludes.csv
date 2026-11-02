@@ -1,0 +1,8 @@
+reason,pattern
+people manager or executive,(?i)\bmanagers?\b|\bdirector\b|\bhead of\b|\bvice president\b|\bchief\b|\bVP\b
+sales,(?i)\bsales (manager|director|specialist|rep|representative|development|executive|lead|operations|enablement)\b|\baccount (executive|director|lead)\b|\bsolutions specialist\b
+marketing or recruiting,(?i)\bmarketing\b|\brecruit
+legal or finance,(?i)\b(counsel|attorney|paralegal|accountant|accounting|payroll)\b
+developer relations,(?i)\bdeveloper (advocate|relations)\b|\bbusiness develop
+security in another sense,(?i)\bnational security\b|\bhomeland security\b|\bphysical security\b|\bsecurity (guard|officer)\b|\bdefen[cs]e (&|and) security\b
+non-engineering leads,(?i)\boperations lead\b|\bpublic sector lead\b

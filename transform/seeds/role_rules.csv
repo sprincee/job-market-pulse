@@ -1,0 +1,22 @@
+role_order,role,pattern
+1,security,(?i)\b(cyber)?security\b
+1,security,(?i)\b(secops|appsec|devsecops|infosec)\b
+1,security,(?i)\bdetection (and|&) response\b|\bdetection engineer
+1,security,(?i)\bsoc analyst\b|\bthreat (hunter|intelligence|researcher)\b
+1,security,\bIAM\b
+2,it_identity,\bIT\b
+2,it_identity,(?i)\bsystems? administrator\b|\bsysadmin\b|\bhelp ?desk\b|\bdesktop support\b
+2,it_identity,(?i)\bcorporate (it|systems|engineering)\b|\bendpoint (engineer|administrator|admin)\b
+2,it_identity,(?i)\bidentity (engineer|administrator|admin|analyst|specialist|architect|governance)\b
+2,it_identity,(?i)\bidentity (and|&) access (engineer|administrator|analyst|specialist)\b
+3,sre_platform,(?i)\bsite reliability\b|\bSRE\b|\bdevops\b
+3,sre_platform,(?i)\bplatform engineer|\binfrastructure engineer|\bcloud engineer|\bproduction engineer
+4,data_eng,(?i)\bdata engineer|\banalytics engineer|\bdata platform\b|\betl (developer|engineer)\b
+5,ml_ai,(?i)\bmachine learning\b|\bML\b|\bAI engineer|\bAI/ML\b|\bapplied scientist\b|\bMLOps\b|\bresearch (scientist|engineer)\b
+6,data_science,(?i)\bdata scien(tist|ce)\b|\bdecision scientist\b
+7,data_analyst,(?i)\bdata analyst\b|\bproduct analyst\b|\bbi (analyst|developer|engineer)\b|\bbusiness intelligence\b
+7,data_analyst,(?i)\banalytics\b.*\banalyst\b|\banalyst\b.*\banalytics\b
+8,solutions_eng,(?i)\bsolutions? (engineer|architect|consultant)\b|\bsales engineer\b|\bcustomer engineer\b
+9,swe,(?i)\bsoftware (engineer|developer|development)|\bSWE\b|\bprogrammer\b
+9,swe,(?i)\b(back|front)[- ]?end\b|\bfull[- ]?stack\b|\bdeveloper\b
+9,swe,(?i)\b(mobile|ios|android|web|product) engineer|\bforward deployed (software )?engineer

@@ -1,0 +1,106 @@
+skill,category,vendor_token,pattern
+Python,Languages,,(?i)\bpython\b
+SQL,Languages,,(?i)\bsql\b
+Java,Languages,,\b(Java|JAVA)\b
+JavaScript,Languages,,(?i)\bjavascript\b
+TypeScript,Languages,,(?i)\btypescript\b
+Go,Languages,,"(?i:\bgolang\b)|\bGo[,/)]|[,/(] ?Go\b|\b(in|with|using|like|or|and) Go\b|\bGo (programming|language|developer|services|code)\b"
+Rust,Languages,,\bRust\b
+C++,Languages,,(?i)\bc\+\+|\bcpp\b
+C#,Languages,,\bC#
+.NET,Languages,,\.NET\b
+Ruby,Languages,,\bRuby\b|\bRails\b
+Scala,Languages,,\bScala\b
+Kotlin,Languages,,\bKotlin\b
+Swift,Languages,,\bSwift\b
+PHP,Languages,,\bPHP\b
+R,Languages,,"[,/] ?R[,/ .]|\bR[,/]|\b(in|with|using|or) R[ ,./]|\bR (programming|language|studio)\b|\bRStudio\b"
+Bash,Languages,,(?i)\bbash\b|\bshell script
+PowerShell,Languages,,(?i)\bpowershell\b
+MATLAB,Languages,,(?i)\bmatlab\b
+AWS,Cloud,,(?i)\baws\b|\bamazon web services\b
+Azure,Cloud,,\bAzure\b
+GCP,Cloud,,(?i)\bgcp\b|\bgoogle cloud\b
+Kubernetes,Infrastructure,,(?i)\bkubernetes\b|\bk8s\b
+Docker,Infrastructure,,(?i)\bdocker\b
+Terraform,Infrastructure,,(?i)\bterraform\b
+Ansible,Infrastructure,,(?i)\bansible\b
+Helm,Infrastructure,,\bHelm\b
+Linux,Infrastructure,,(?i)\blinux\b
+CI/CD,Infrastructure,,(?i)\bci/cd\b|\bcicd\b|\bcontinuous integration\b
+GitHub Actions,Infrastructure,,(?i)\bgithub actions\b
+Jenkins,Infrastructure,,(?i)\bjenkins\b
+Argo,Infrastructure,,\bArgo(CD| CD|)\b
+Git,Infrastructure,,\bGit\b
+Istio,Infrastructure,,(?i)\bistio\b
+Prometheus,Observability,,\bPrometheus\b
+Grafana,Observability,grafanalabs,\bGrafana\b
+Datadog,Observability,datadog,(?i)\bdatadog\b
+OpenTelemetry,Observability,,(?i)\bopentelemetry\b|\botel\b
+Splunk,Observability,,(?i)\bsplunk\b
+Spark,Data,,\bSpark\b|\bPySpark\b|(?i:\bapache spark\b)
+Kafka,Data,,(?i)\bkafka\b
+Airflow,Data,,(?i)\bairflow\b
+dbt,Data,,\b(dbt|DBT)\b
+Snowflake,Data,snowflake,\bSnowflake\b
+Databricks,Data,databricks,(?i)\bdatabricks\b
+BigQuery,Data,,(?i)\bbigquery\b
+Redshift,Data,,(?i)\bredshift\b
+Hadoop,Data,,(?i)\bhadoop\b
+Flink,Data,,(?i)\bflink\b
+Iceberg,Data,,\bIceberg\b
+Fivetran,Data,fivetran,(?i)\bfivetran\b
+ETL/ELT,Data,,\b(ETL|ELT)\b
+Data modeling,Data,,(?i)\bdata model(l)?ing\b
+Pandas,Data,,(?i)\bpandas\b
+NumPy,Data,,(?i)\bnumpy\b
+PostgreSQL,Databases,,(?i)\bpostgres(ql)?\b
+MySQL,Databases,,(?i)\bmysql\b
+MongoDB,Databases,mongodb,(?i)\bmongodb\b
+Redis,Databases,,(?i)\bredis\b
+Elasticsearch,Databases,elastic,(?i)\belasticsearch\b
+DynamoDB,Databases,,(?i)\bdynamodb\b
+ClickHouse,Databases,clickhouse,(?i)\bclickhouse\b
+Cassandra,Databases,,(?i)\bcassandra\b
+Tableau,Analytics,,(?i)\btableau\b
+Power BI,Analytics,,(?i)\bpower ?bi\b
+Looker,Analytics,,\bLooker\b
+Excel,Analytics,,"(?i:\b(microsoft|ms) excel\b)|\bExcel[,/)]|[,/(] ?Excel\b|\b(in|with|using|advanced|and|or) Excel\b|\bExcel (spreadsheets?|skills|formulas|models?|modeling)\b"
+A/B testing,Analytics,,(?i)\ba/b test
+PyTorch,AI/ML,,(?i)\bpytorch\b
+TensorFlow,AI/ML,,(?i)\btensorflow\b
+scikit-learn,AI/ML,,(?i)\bscikit-learn\b|\bsklearn\b
+LLMs,AI/ML,,\bLLMs?\b
+RAG,AI/ML,,\bRAG\b
+LangChain,AI/ML,,(?i)\blangchain\b
+Hugging Face,AI/ML,,(?i)\bhugging ?face\b
+MLflow,AI/ML,,(?i)\bmlflow\b
+React,Web,,\bReact\b|(?i:\breact\.?js\b)
+Angular,Web,,\bAngular\b
+Vue,Web,,\bVue\b|(?i:\bvue\.?js\b)
+Node.js,Web,,(?i)\bnode\.?js\b
+Next.js,Web,vercel,(?i)\bnext\.?js\b
+GraphQL,Web,,(?i)\bgraphql\b
+gRPC,Web,,(?i)\bgrpc\b
+SIEM,Security,,\bSIEM\b
+Threat modeling,Security,,(?i)\bthreat model(l)?ing\b
+Penetration testing,Security,,(?i)\bpenetration test|\bpen ?test
+Vulnerability management,Security,,(?i)\bvulnerability management\b
+Zero trust,Security,,(?i)\bzero[- ]trust\b
+OWASP,Security,,\bOWASP\b
+NIST,Security,,\bNIST\b
+SOC 2,Security,,(?i)\bsoc ?2\b
+ISO 27001,Security,,(?i)\biso ?27001\b
+FedRAMP,Security,,(?i)\bfedramp\b
+CrowdStrike,Security,,(?i)\bcrowdstrike\b
+Okta,Identity,okta,\bOkta\b
+Entra ID,Identity,,(?i)\bentra( id)?\b|\bazure (ad|active directory)\b
+Active Directory,Identity,,(?i)\bactive directory\b
+SAML,Identity,,\bSAML\b
+OAuth,Identity,,(?i)\boauth
+OIDC,Identity,,\bOIDC\b|(?i:\bopenid connect\b)
+SSO,Identity,,\bSSO\b
+SCIM,Identity,,\bSCIM\b
+RBAC,Identity,,\bRBAC\b
+Intune,Identity,,(?i)\bintune\b
+Jamf,Identity,,(?i)\bjamf\b

@@ -1,0 +1,31 @@
+models:
+  - name: fct_postings
+    description: One row per posting, with role and first and last seen dates.
+    columns:
+      - name: posting_key
+        data_tests: [not_null, unique]
+      - name: company_token
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('companies')
+                field: company_token
+      - name: role
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [security, it_identity, sre_platform, data_eng, ml_ai, data_science, data_analyst, solutions_eng, swe, other]
+  - name: fct_skill_mentions
+    description: One row per tech posting and skill it mentions.
+    columns:
+      - name: posting_key
+        data_tests: [not_null]
+      - name: skill
+        data_tests: [not_null]
+  - name: agg_skill_demand
+    description: Skill demand among active tech roles, per role and overall.
+  - name: dim_company
+    description: Tracked companies and the dates we have data for.
+    columns:
+      - name: company_token
+        data_tests: [not_null, unique]

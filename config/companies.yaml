@@ -4,7 +4,8 @@
 #   ashby:      jobs.ashbyhq.com/<token>
 # "verified" = board confirmed to exist on 2026-10-19. Everything added 2026-10-25 was verified
 # against the live API that day (watch for same-name collisions, e.g. arcadia/primer were wrong companies).
-# lanes = rough hint of what the company hires for; real role classification is per posting via roles.yaml.
+# lanes = rough hint of what the company hires for; real role classification is per posting via transform/seeds/role_rules.csv.
+# After changing this list, run scripts/companies_to_seed.py.
 
 # --- Original 10 (2026-10-19) ---
 
