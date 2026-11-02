@@ -30,6 +30,15 @@ title_roles as (
     join {{ ref('role_rules') }} as r on regexp_matches(p.title, r.pattern)
     where p.title not in (select title from excluded)
     qualify row_number() over (partition by p.title order by r.role_order) = 1
+),
+
+entry_level_titles as (
+    select p.title
+    from (select distinct title from postings) as p
+    join {{ ref('entry_level_rules') }} as e on regexp_matches(p.title, e.pattern)
+    group by p.title
+    having count(*) filter (where e.kind = 'include') > 0
+       and count(*) filter (where e.kind = 'exclude') = 0
 )
 
 select
@@ -39,6 +48,7 @@ select
     p.title,
     coalesce(r.role, 'other') as role,
     r.role is not null as is_tech_role,
+    r.role is not null and p.title in (select title from entry_level_titles) as is_entry_level,
     -- one job listed in many cities counts once
     p.company_token || '|' || lower(p.title) as unique_role_key,
     p.location,

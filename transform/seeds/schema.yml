@@ -7,6 +7,16 @@ seeds:
     description: Titles matching any of these are never given a role, whatever else they contain.
     config:
       column_types: {reason: varchar, pattern: varchar}
+  - name: entry_level_rules
+    description: A tech title is entry level if it matches an include pattern and no exclude pattern.
+    config:
+      column_types: {kind: varchar, pattern: varchar}
+    columns:
+      - name: kind
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [include, exclude]
   - name: skills
     description: "Skill dictionary (RE2 regex, no lookahead). vendor_token: that company's own postings don't count as demand for its product."
     config:

@@ -214,9 +214,15 @@ h2 {
 .skills th:nth-child(3), .skills th:nth-child(4) { width: 14%; padding-left: var(--s2); }
 .skills tbody th, .skills td { padding: 7px 0; border-bottom: 1px solid var(--rule); }
 .skills tbody th { font-weight: 500; text-align: left; padding-right: var(--s1); overflow-wrap: anywhere; }
-.skills tbody tr { transition: background-color 150ms ease-out; }
-.skills tbody tr:hover, .skills tbody tr:focus { background: var(--hover); outline: none; }
-.skills tbody tr:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.skills tbody tr { position: relative; transition: background-color 150ms ease-out; }
+.skills tbody tr:hover, .skills tbody tr:focus-within { background: var(--hover); }
+/* The link covers its whole row, so the row is one big tap target */
+.skills tbody th a { text-decoration-color: var(--rule); }
+.skills tbody th a::after { content: ""; position: absolute; inset: 0; }
+.skills tbody th a:focus-visible { outline: none; }
+.skills tbody th a:focus-visible::after { outline: 2px solid var(--accent); outline-offset: -2px; }
+.skills tbody tr:hover th a { color: var(--accent); }
+.skills tbody tr:active { background: var(--track); }
 
 .num { text-align: right !important; font-variant-numeric: tabular-nums; }
 .value { font-weight: 500; }
@@ -262,7 +268,7 @@ h2 {
   line-height: 1.35;
   white-space: nowrap;
 }
-.skills tr:hover .tip, .skills tr:focus .tip { display: block; }
+.skills tr:hover .tip, .skills tr:focus-within .tip { display: block; }
 
 .legend { list-style: none; margin: 0; padding: 0; font-size: .9rem; color: var(--ink-2); }
 .legend li { display: flex; align-items: center; gap: var(--s1); padding: 4px 0; }
@@ -283,6 +289,9 @@ h2 {
   border-top: 1px solid var(--ink);
 }
 .signature li { padding-top: var(--s2); }
+.signature a { display: block; text-decoration: none; }
+.signature a:hover { color: inherit; }
+.signature a:hover .sig-skill { color: var(--accent); }
 .sig-gap {
   display: block;
   font: 300 clamp(3rem, 6vw, 4.75rem)/1 var(--display);
@@ -292,6 +301,25 @@ h2 {
 }
 .sig-skill { display: block; margin-top: var(--s1); font-size: 1.15rem; font-weight: 600; }
 .sig-detail { display: block; font-size: .9rem; color: var(--ink-2); }
+
+/* Links to open postings, ruled like everything else */
+.jobs { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.jobs li { border-bottom: 1px solid var(--rule); }
+.jobs a {
+  display: block;
+  padding: 12px var(--s1);
+  text-decoration: none;
+  transition: background-color 150ms ease-out;
+}
+.jobs a:hover { background: var(--hover); color: inherit; }
+.jobs a:hover .job-title { color: var(--accent); }
+.jobs a:active { background: var(--track); }
+.job-title { display: block; font-weight: 500; overflow-wrap: anywhere; transition: color 150ms ease-out; }
+.job-meta { display: block; margin-top: 2px; font-size: .9rem; color: var(--ink-2); overflow-wrap: anywhere; }
+.more-jobs { margin-top: var(--s1); }
+.more-jobs .jobs { border-top: 0; }
+.more-jobs summary { cursor: pointer; padding: var(--s1) 0; font-weight: 500; }
+.more-jobs summary:hover { color: var(--accent); }
 
 .all-skills { margin-top: var(--s3); }
 .all-skills summary { cursor: pointer; padding: var(--s1) 0; font-weight: 500; }
@@ -349,7 +377,11 @@ footer a + a { margin-left: var(--s2); }
   body { padding: 0 var(--s2); font-size: 16px; }
   .masthead { grid-template-columns: 1fr auto; padding-top: var(--s2); }
   .dateline { grid-column: 1 / -1; grid-row: 2; }
-  .masthead nav a { display: inline-block; padding: 4px 0; }
+  .masthead nav a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+  .brand { display: inline-block; padding: 8px 0; margin: -8px 0; }
+  .crumb { padding-top: 12px; }
+  .crumb a { display: inline-block; padding: 12px 0; }
+  .crumb + .hero { padding-top: var(--s2); }
   .hero { padding-top: var(--s5); }
   .meter { margin-top: var(--s4); }
   .hero-foot { grid-template-columns: 1fr; gap: var(--s4); }
@@ -360,9 +392,14 @@ footer a + a { margin-left: var(--s2); }
   .skills th:nth-child(3), .skills th:nth-child(4) { width: 21%; padding-left: 4px; }
   .skills thead th { font-size: .66rem; letter-spacing: .05em; }
   .tip { white-space: normal; width: 200px; }
-  .all-skills summary { padding: 12px 0; }
+  /* Shorter chart on phones; "See all" still has every skill */
+  .skills tbody tr:nth-child(n+11) { display: none; }
+  .skills tbody th, .skills td { padding-top: 11px; padding-bottom: 11px; }
+  .jobs a { padding-left: 0; padding-right: 0; }
+  .all-skills summary, .more-jobs summary { padding: 12px 0; }
+  .plain th a { display: inline-block; padding: 8px 0; }
   .role-links a { padding: 10px 0; }
-  footer a { display: inline-block; padding: 8px 0; }
+  footer a { display: inline-block; padding: 12px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

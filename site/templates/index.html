@@ -19,7 +19,7 @@
   <ul class="role-index">
     {% for c in cards %}
     <li>
-      <a href="/roles/{{ c.slug }}/">
+      <a href="{{ c.href }}">
         <span class="role-name">{{ c.label }}</span>
         <span class="role-top">{{ c.top | join(", ") }}</span>
         <span class="role-signature">{% if c.signature %}{{ c.signature.skill }}: {{ c.signature.pct_of_roles | round | int }}% vs. {{ c.signature.overall | round | int }}%{% endif %}</span>

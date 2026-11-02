@@ -1,0 +1,8 @@
+kind,pattern
+include,(?i)\binterns?\b|\binternships?\b|\bco-?op\b|\bapprentice(ship)?\b
+include,(?i)\bnew[- ]grad(uate)?s?\b|\bearly[- ]career\b|\buniversity (grad(uate)?|hire)\b|\bentry[- ]level\b
+include,(?i)\bjunior\b|\bjr\.?\s|\bemerging talent\b
+include,(?i)\bassociate\b
+include,"(?i)\b(engineer|developer|analyst|administrator|scientist|specialist|architect),? (i|1)\b"
+exclude,(?i)\bsenior\b|\bsr\.?\s|\bstaff\b|\bprincipal\b|\blead\b|\bchief\b
+exclude,(?i)\bassociate (partner|principal|general counsel)\b

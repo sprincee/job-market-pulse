@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% from "_skills.html" import ledger, job_list %}
+{% block title %}{{ skill.skill }} demand across tech roles | Worth Learning{% endblock %}
+{% block content %}
+<nav class="crumb" aria-label="Breadcrumb"><a href="/">← All roles</a></nav>
+<section class="hero hero-role">
+  <p class="kicker">{{ skill.category }}</p>
+  <h1>{{ skill.skill }} is in {{ skill.pct_of_roles | round | int }}% of open tech roles.</h1>
+  <div class="meter" role="img" aria-label="{{ skill.pct_of_roles | round | int }} percent of open tech roles mention {{ skill.skill }}">
+    <span class="meter-fill" style="--v: {{ skill.pct_of_roles }}"></span>
+  </div>
+  <div class="hero-foot">
+    <p class="lede">{{ skill.companies_mentioning }} of {{ skill.companies_total }} tracked companies mention it. Here's who asks for it, and for which roles.</p>
+    {{ ledger(facts) }}
+  </div>
+</section>
+
+{% if skill.roles_mentioning < small_sample %}
+<p class="caution"><strong>Small sample.</strong> Only {{ skill.roles_mentioning }} open roles mention {{ skill.skill }}, so these numbers can move a lot.</p>
+{% endif %}
+
+{% if by_role %}
+<section class="section split">
+  <div class="split-side">
+    <h2>By role</h2>
+    <ul class="legend">
+      <li><span class="key key-bar"></span>Share of that role's openings</li>
+      <li><span class="key key-tick"></span>Share across all tech roles</li>
+    </ul>
+  </div>
+  <div class="split-main">
+    <table class="skills">
+      <caption>Share of each role's open positions and of its companies mentioning {{ skill.skill }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">Role</th>
+          <th scope="col"><span class="visually-hidden">Share of roles, as a bar</span></th>
+          <th scope="col" class="num">% of roles</th>
+          <th scope="col" class="num">% of companies</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in by_role %}
+        <tr>
+          <th scope="row"><a href="/roles/{{ r.role }}/">{{ r.label }}</a></th>
+          <td class="bar-cell">
+            <span class="track">
+              <span class="bar" style="--v: {{ r.pct_of_roles }}"></span>
+              <span class="tick" style="--v: {{ skill.pct_of_roles }}"></span>
+            </span>
+            <span class="tip">{{ r.roles_mentioning }} of {{ r.roles_total }} roles · {{ r.companies_mentioning }} of {{ r.companies_total }} companies</span>
+          </td>
+          <td class="num value">{{ r.pct_of_roles | round | int }}%</td>
+          <td class="num muted">{{ r.pct_of_companies | round | int }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="note">Roles with at least {{ min_mentions }} openings mentioning {{ skill.skill }}.</p>
+  </div>
+</section>
+{% endif %}
+
+<section class="section split">
+  <div class="split-side">
+    <h2>Who asks for it</h2>
+    <p class="note">Companies with the most open tech roles mentioning {{ skill.skill }}.</p>
+  </div>
+  <div class="split-main">
+    <dl class="ledger">
+      {% for c in companies %}
+      <div><dt>{{ c.company_name }}</dt><dd>{{ c.roles }} {{ "role" if c.roles == 1 else "roles" }}</dd></div>
+      {% endfor %}
+    </dl>
+  </div>
+</section>
+
+{% if jobs %}
+<section class="section split">
+  <div class="split-side">
+    <h2>Recently posted</h2>
+    <p class="note">Open roles mentioning {{ skill.skill }}, newest first, up to 3 per company.</p>
+  </div>
+  <div class="split-main">
+    {{ job_list(jobs) }}
+  </div>
+</section>
+{% endif %}
+
+{% if related %}
+<section class="section">
+  <h2>More in {{ skill.category }}</h2>
+  <ul class="role-links">
+    {% for r in related %}
+    <li><a href="/skills/{{ r.skill | skill_slug }}/">{{ r.skill }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endblock %}

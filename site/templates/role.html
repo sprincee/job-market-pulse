@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_skills.html" import skill_table, all_skills, ledger %}
+{% from "_skills.html" import skill_table, all_skills, ledger, job_list %}
 {% block title %}{{ label }} skills in demand | Worth Learning{% endblock %}
 {% block content %}
 {% set lead = signature[0] if signature else skills[0] %}
@@ -20,16 +20,21 @@
 {% if facts.roles < small_sample %}
 <p class="caution"><strong>Small sample.</strong> With only {{ facts.roles }} open roles, a few postings can move these percentages a lot.</p>
 {% endif %}
+{% if entry_companies %}
+<p class="caution"><strong>A narrow group.</strong> These are matched from job titles, and {{ entry_companies[0].company_name }} and {{ entry_companies[1].company_name }} make up {{ ((entry_companies[0].roles + entry_companies[1].roles) * 100 / facts.roles) | round | int }}% of them, so their needs weigh heavily here.</p>
+{% endif %}
 
 {% if signature %}
 <section class="section">
-  <h2>What sets this role apart</h2>
+  <h2>What sets this apart</h2>
   <ol class="signature">
     {% for s in signature %}
     <li>
-      <span class="sig-gap">+{{ s.gap }}</span>
-      <span class="sig-skill">{{ s.skill }}</span>
-      <span class="sig-detail">{{ s.pct_of_roles | round | int }}% here, {{ s.overall | round | int }}% overall</span>
+      <a href="/skills/{{ s.skill | skill_slug }}/">
+        <span class="sig-gap">+{{ s.gap }}</span>
+        <span class="sig-skill">{{ s.skill }}</span>
+        <span class="sig-detail">{{ s.pct_of_roles | round | int }}% here, {{ s.overall | round | int }}% overall</span>
+      </a>
     </li>
     {% endfor %}
   </ol>
@@ -52,12 +57,25 @@
   </div>
 </section>
 
+{% if jobs %}
+<section class="section split">
+  <div class="split-side">
+    <h2>Recently posted</h2>
+    <p class="note">Open roles from the job boards, newest first, up to 3 per company.</p>
+  </div>
+  <div class="split-main">
+    {{ job_list(jobs) }}
+  </div>
+</section>
+{% endif %}
+
 <section class="section">
   <h2>Other roles</h2>
   <ul class="role-links">
     {% for s, l in roles.items() if s != slug %}
     <li><a href="/roles/{{ s }}/">{{ l }}</a></li>
     {% endfor %}
+    {% if slug != "entry-level" %}<li><a href="/entry-level/">{{ entry_label }}</a></li>{% endif %}
   </ul>
 </section>
 {% endblock %}

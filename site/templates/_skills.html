@@ -1,5 +1,6 @@
 {# Ranked skill bars on a fixed 0-100% scale, so lengths compare across pages. The
-   chart is a real table: every value is printed, and no JavaScript is needed. #}
+   chart is a real table: every value is printed, and no JavaScript is needed.
+   Each row's name is a link stretched over the row, for an easy tap target. #}
 {% macro skill_table(skills, limit, caption, compare=false) %}
 <table class="skills">
   <caption>{{ caption }}</caption>
@@ -13,8 +14,8 @@
   </thead>
   <tbody>
     {% for s in skills[:limit] %}
-    <tr tabindex="0"{% if s.high %} class="is-high"{% endif %}>
-      <th scope="row">{{ s.skill }}</th>
+    <tr{% if s.high %} class="is-high"{% endif %}>
+      <th scope="row"><a href="/skills/{{ s.skill | skill_slug }}/">{{ s.skill }}</a></th>
       <td class="bar-cell">
         <span class="track">
           <span class="bar" style="--v: {{ s.pct_of_roles }}"></span>
@@ -40,7 +41,7 @@
       </thead>
       <tbody>
         {% for s in skills %}
-        <tr><th scope="row">{{ s.skill }}</th><td>{{ s.category }}</td><td class="num">{{ s.roles_mentioning }}</td><td class="num">{{ s.pct_of_roles }}%</td><td class="num">{{ s.companies_mentioning }}</td><td class="num">{{ s.pct_of_companies | round | int }}%</td></tr>
+        <tr><th scope="row"><a href="/skills/{{ s.skill | skill_slug }}/">{{ s.skill }}</a></th><td>{{ s.category }}</td><td class="num">{{ s.roles_mentioning }}</td><td class="num">{{ s.pct_of_roles }}%</td><td class="num">{{ s.companies_mentioning }}</td><td class="num">{{ s.pct_of_companies | round | int }}%</td></tr>
         {% endfor %}
       </tbody>
     </table>
@@ -55,4 +56,28 @@
   <div><dt>New in the last 7 days</dt><dd>{{ "{:,}".format(facts.new_7d) }}</dd></div>
   <div><dt>Listed as remote</dt><dd>At least {{ facts.remote_pct | int }}%</dd></div>
 </dl>
+{% endmacro %}
+
+{% macro job_row(job) %}
+<li>
+  <a href="{{ job.url }}" rel="noopener nofollow">
+    <span class="job-title">{{ job.title }}</span>
+    <span class="job-meta">{{ job.company_name }}{% if job.place %} · {{ job.place }}{% endif %}{% if job.seen %} · First seen {{ job.seen }}{% endif %}</span>
+  </a>
+</li>
+{% endmacro %}
+
+{# Five jobs show right away; the rest wait behind one tap. #}
+{% macro job_list(jobs) %}
+<ul class="jobs">
+  {% for job in jobs[:5] %}{{ job_row(job) }}{% endfor %}
+</ul>
+{% if jobs | length > 5 %}
+<details class="more-jobs">
+  <summary>See {{ jobs | length - 5 }} more</summary>
+  <ul class="jobs">
+    {% for job in jobs[5:] %}{{ job_row(job) }}{% endfor %}
+  </ul>
+</details>
+{% endif %}
 {% endmacro %}

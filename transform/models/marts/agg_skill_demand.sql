@@ -1,9 +1,9 @@
-{# What the dashboard shows: currently active tech roles, per role and overall.
-   pct_of_companies is the guard against big boards: Anduril alone is ~19% of
-   all postings, but only one company. #}
+{# What the site shows: currently active tech roles, per role, overall (all_tech)
+   and for entry-level titles (entry_level). pct_of_companies is the guard against
+   big boards: Anduril alone is ~19% of all postings, but only one company. #}
 
 with active as (
-    select unique_role_key, company_token, role
+    select unique_role_key, company_token, role, is_entry_level
     from {{ ref('fct_postings') }}
     where is_active and is_tech_role
 ),
@@ -12,6 +12,8 @@ active_all as (
     select distinct unique_role_key, company_token, role from active
     union all
     select distinct unique_role_key, company_token, 'all_tech' from active
+    union all
+    select distinct unique_role_key, company_token, 'entry_level' from active where is_entry_level
 ),
 
 totals as (

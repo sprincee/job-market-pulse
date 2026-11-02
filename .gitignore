@@ -36,4 +36,5 @@ Thumbs.db
 # Claude Code (personal session notes and local settings)
 CLAUDE.md
 DESIGN.md
+Simple.md
 .claude/settings.local.json
