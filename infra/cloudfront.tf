@@ -8,7 +8,8 @@ resource "aws_cloudfront_origin_access_control" "site" {
   signing_protocol                  = "sigv4"
 }
 
-# S3 has no folders, so /roles/swe/ has to be rewritten to /roles/swe/index.html.
+# Sends www to the main address. S3 has no folders, so it also rewrites
+# /roles/swe/ to /roles/swe/index.html.
 resource "aws_cloudfront_function" "index_rewrite" {
   name    = "jmp-index-rewrite"
   runtime = "cloudfront-js-2.0"
@@ -16,6 +17,13 @@ resource "aws_cloudfront_function" "index_rewrite" {
   code    = <<-JS
     function handler(event) {
       var request = event.request;
+      if (request.headers.host.value === 'www.worthlearning.dev') {
+        return {
+          statusCode: 301,
+          statusDescription: 'Moved Permanently',
+          headers: { location: { value: 'https://worthlearning.dev' + request.uri } }
+        };
+      }
       if (request.uri.endsWith('/')) {
         request.uri += 'index.html';
       } else if (!request.uri.includes('.')) {
@@ -29,6 +37,7 @@ resource "aws_cloudfront_function" "index_rewrite" {
 resource "aws_cloudfront_distribution" "site" {
   enabled             = true
   comment             = "Job Market Pulse"
+  aliases             = ["worthlearning.dev", "www.worthlearning.dev"]
   default_root_object = "index.html"
   is_ipv6_enabled     = true
   price_class         = "PriceClass_100" # North America and Europe edges only; the cheapest class
@@ -67,8 +76,9 @@ resource "aws_cloudfront_distribution" "site" {
     }
   }
 
-  # The default *.cloudfront.net certificate; replaced when the custom domain is added.
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = aws_acm_certificate.site.arn
+    ssl_support_method       = "sni-only" # the free option; a dedicated IP costs $600/month
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 }

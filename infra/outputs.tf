@@ -8,9 +8,20 @@ output "ingest_function" {
   value       = aws_lambda_function.ingest.function_name
 }
 
-output "site_url" {
-  description = "The public site, until the custom domain is added"
-  value       = "https://${aws_cloudfront_distribution.site.domain_name}"
+output "certificate_validation_records" {
+  description = "CNAME records to add at Namecheap so ACM can issue the certificate"
+  value = {
+    for option in aws_acm_certificate.site.domain_validation_options : option.domain_name => {
+      type  = option.resource_record_type
+      name  = option.resource_record_name
+      value = option.resource_record_value
+    }
+  }
+}
+
+output "cloudfront_domain_name" {
+  description = "Where the domain's DNS records point"
+  value       = aws_cloudfront_distribution.site.domain_name
 }
 
 output "cloudfront_distribution_id" {
