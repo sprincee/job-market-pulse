@@ -34,6 +34,35 @@ resource "aws_cloudfront_function" "index_rewrite" {
   JS
 }
 
+# Browser safety rules sent with every response; free. The site has no JavaScript,
+# so scripts stay blocked. style-src-attr allows the style="--v: 42" bar widths.
+resource "aws_cloudfront_response_headers_policy" "site" {
+  name = "jmp-site-security"
+
+  security_headers_config {
+    strict_transport_security {
+      access_control_max_age_sec = 31536000 # one year
+      include_subdomains         = true
+      override                   = true
+    }
+    content_type_options {
+      override = true
+    }
+    frame_options {
+      frame_option = "DENY"
+      override     = true
+    }
+    referrer_policy {
+      referrer_policy = "strict-origin-when-cross-origin"
+      override        = true
+    }
+    content_security_policy {
+      content_security_policy = "default-src 'none'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+      override                = true
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "site" {
   enabled             = true
   comment             = "Job Market Pulse"
@@ -55,6 +84,8 @@ resource "aws_cloudfront_distribution" "site" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
     cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6" # AWS managed: CachingOptimized
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.site.id
 
     function_association {
       event_type   = "viewer-request"
